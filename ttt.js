@@ -65,7 +65,7 @@ const marking = function(event) {
 
         // 다 찼으면
         if (threeTd) {
-            alert('Player ' + turn + ' win!');
+            alert(turn + '가 이긴 거시에요!');
 
             // 초기화
             /*
