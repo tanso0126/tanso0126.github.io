@@ -68,13 +68,14 @@ const marking = function(event) {
             alert('Player ' + turn + ' win!');
 
             // 초기화
+            /*
             turn = 'X';
             tds.forEach(function (trs) {
                 trs.forEach(function (td) {
                     td.textContent = '';
                 });
             });
-
+*/
         } else { // 다 안 찼으면
             if (turn === 'X') {
                 turn = 'O';
