@@ -113,3 +113,5 @@ resetBtn.addEventListener('click', function() {
 });
 
 console.log(trs, tds);
+
+//○●□■△▲
