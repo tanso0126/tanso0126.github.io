@@ -122,7 +122,7 @@ const marking = function(event) {
     }
 
     if (threeTd) {
-        alert(turn + ' wins with ' + selectedSymbol + '!');
+        alert(((turn == "X") ? "선공" : "후공") + '이 ' + selectedSymbol + '으로 승리!');
     } else {
         turn = turn === 'X' ? 'O' : 'X';
         updateSymbols();
