@@ -10,20 +10,42 @@ const markSymbols = {
     'O': ['●', '▲', '■']
 };
 
+const symbolsContainer = document.getElementById('symbols');
+
+const updateSymbols = () => {
+    symbolsContainer.innerHTML = '';
+    markSymbols[turn].forEach(symbol => {
+        const label = document.createElement('label');
+        label.className = 'symbol';
+        const input = document.createElement('input');
+        input.type = 'radio';
+        input.name = 'symbol';
+        input.value = symbol;
+        label.appendChild(input);
+        label.appendChild(document.createTextNode(symbol));
+        symbolsContainer.appendChild(label);
+    });
+};
+
+const getSelectedSymbol = () => {
+    const selected = document.querySelector('input[name="symbol"]:checked');
+    return selected ? selected.value : null;
+};
+
 const marking = function(event) {
     if (event.target.textContent !== '') {
         console.log('Not empty');
         return;
     }
 
-    const trNumber = trs.indexOf(event.target.parentNode);
-    const tdNumber = tds[trNumber].indexOf(event.target);
-
-    let selectedSymbol = prompt(`무엇을 낼지 선택하세요: (${markSymbols[turn].join(', ')}):`);
-    if (!markSymbols[turn].includes(selectedSymbol)) {
-        alert('그지같은거 쓰지 마세요!');
+    const selectedSymbol = getSelectedSymbol();
+    if (!selectedSymbol) {
+        alert('모양을 선택해주세요!');
         return;
     }
+
+    const trNumber = trs.indexOf(event.target.parentNode);
+    const tdNumber = tds[trNumber].indexOf(event.target);
 
     tds[trNumber][tdNumber].textContent = selectedSymbol;
 
@@ -73,6 +95,7 @@ const marking = function(event) {
         alert(turn + ' wins with ' + selectedSymbol + '!');
     } else {
         turn = turn === 'X' ? 'O' : 'X';
+        updateSymbols();
     }
 };
 
@@ -99,6 +122,8 @@ resetBtn.addEventListener('click', function() {
             td.textContent = '';
         });
     });
+    updateSymbols();
 });
 
+updateSymbols();
 console.log(trs, tds);
