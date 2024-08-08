@@ -10,6 +10,15 @@ const markSymbols = {
     'O': ['●', '▲', '■']
 };
 
+const transformRules = {
+    '○': '▲',
+    '△': '■',
+    '□': '●',
+    '●': '△',
+    '▲': '□',
+    '■': '○'
+};
+
 const symbolsContainer = document.getElementById('symbols');
 
 const updateSymbols = () => {
@@ -32,6 +41,26 @@ const getSelectedSymbol = () => {
     return selected ? selected.value : null;
 };
 
+const applyTransformations = (trNumber, tdNumber, symbol) => {
+    const directions = [
+        [-1, -1], [-1, 0], [-1, 1],
+        [ 0, -1],         [ 0, 1],
+        [ 1, -1], [ 1, 0], [ 1, 1]
+    ];
+
+    directions.forEach(direction => {
+        const [dx, dy] = direction;
+        const x = trNumber + dx;
+        const y = tdNumber + dy;
+        if (x >= 0 && x < 3 && y >= 0 && y < 3) {
+            const targetCell = tds[x][y];
+            if (targetCell.textContent === transformRules[symbol]) {
+                targetCell.textContent = symbol;
+            }
+        }
+    });
+};
+
 const marking = function(event) {
     if (event.target.textContent !== '') {
         console.log('Not empty');
@@ -48,6 +77,7 @@ const marking = function(event) {
     const tdNumber = tds[trNumber].indexOf(event.target);
 
     tds[trNumber][tdNumber].textContent = selectedSymbol;
+    applyTransformations(trNumber, tdNumber, selectedSymbol);
 
     let threeTd = false;
 
