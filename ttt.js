@@ -61,71 +61,114 @@ const applyTransformations = (trNumber, tdNumber, symbol) => {
     });
 };
 
+const isBoardFull = () => {
+    return tds.flat().every(td => td.textContent !== '');
+};
+
+const checkVictory = () => {
+    // Check horizontal, vertical, and diagonal lines for a win
+    for (let i = 0; i < 3; i++) {
+        // Horizontal check
+        if (tds[i][0].textContent === tds[i][1].textContent && 
+            tds[i][1].textContent === tds[i][2].textContent &&
+            tds[i][0].textContent !== '') {
+            return true;
+        }
+        // Vertical check
+        if (tds[0][i].textContent === tds[1][i].textContent &&
+            tds[1][i].textContent === tds[2][i].textContent &&
+            tds[0][i].textContent !== '') {
+            return true;
+        }
+    }
+    // Diagonal check
+    if (tds[0][0].textContent === tds[1][1].textContent &&
+        tds[1][1].textContent === tds[2][2].textContent &&
+        tds[0][0].textContent !== '') {
+        return true;
+    }
+    if (tds[0][2].textContent === tds[1][1].textContent &&
+        tds[1][1].textContent === tds[2][0].textContent &&
+        tds[0][2].textContent !== '') {
+        return true;
+    }
+    return false;
+};
+
+const checkBoardCompletion = () => {
+    // Check if the board is completely filled with the current player's symbols
+    const playerSymbols = markSymbols[turn];
+    const allSymbols = tds.flat().map(td => td.textContent);
+    return allSymbols.every(symbol => playerSymbols.includes(symbol));
+};
+
 const marking = function(event) {
-    if (event.target.textContent !== '') {
-        console.log('Not empty');
-        return;
-    }
-
-    const selectedSymbol = getSelectedSymbol();
-    if (!selectedSymbol) {
-        alert('모양을 선택해주세요!');
-        return;
-    }
-
-    const trNumber = trs.indexOf(event.target.parentNode);
-    const tdNumber = tds[trNumber].indexOf(event.target);
-
-    tds[trNumber][tdNumber].textContent = selectedSymbol;
-    applyTransformations(trNumber, tdNumber, selectedSymbol);
-
-    let threeTd = false;
-
-    // 가로줄 검사
-    if (
-        tds[trNumber][0].textContent === selectedSymbol &&
-        tds[trNumber][1].textContent === selectedSymbol &&
-        tds[trNumber][2].textContent === selectedSymbol 
-    ) {
-        threeTd = true;
-    }
-    
-    // 세로줄 검사
-    if (
-        tds[0][tdNumber].textContent === selectedSymbol &&
-        tds[1][tdNumber].textContent === selectedSymbol &&
-        tds[2][tdNumber].textContent === selectedSymbol
-    ) {
-        threeTd = true;
-    }
-
-    // 대각선 검사 필요한 경우 1
-    if (trNumber - tdNumber === 0) { 
-        if ( 
-            tds[0][0].textContent === selectedSymbol &&
-            tds[1][1].textContent === selectedSymbol &&
-            tds[2][2].textContent === selectedSymbol
-        ) {
-            threeTd = true;
+    if (isBoardFull()) {
+        const selectedSymbol = getSelectedSymbol();
+        if (!selectedSymbol) {
+            alert('모양을 선택해주세요!');
+            return;
         }
-    }
 
-    // 대각선 검사 필요한 경우 2
-    if (Math.abs(trNumber - tdNumber) === 2) {
-        if ( 
-            tds[0][2].textContent === selectedSymbol &&
-            tds[1][1].textContent === selectedSymbol &&
-            tds[2][0].textContent === selectedSymbol
-        ) {
-            threeTd = true;
+        if (event.target.textContent === '') {
+            alert('이미 채워진 칸입니다.');
+            return;
         }
-    }
 
-    if (threeTd) {
-        alert(((turn == "X") ? "선공" : "후공") + '이 ' + selectedSymbol + '으로 승리!');
-    } else {
+        if (!markSymbols[turn].includes(event.target.textContent)) {
+            alert('자신의 모양만 변경할 수 있습니다.');
+            return;
+        }
+
+        const currentSymbol = event.target.textContent;
+        if (currentSymbol === selectedSymbol) {
+            alert('같은 모양으로는 변경할 수 없습니다.');
+            return;
+        }
+
+        event.target.textContent = selectedSymbol;
+        applyTransformations(
+            trs.indexOf(event.target.parentNode),
+            tds[trs.indexOf(event.target.parentNode)].indexOf(event.target),
+            selectedSymbol
+        );
+
+        if (checkVictory()) {
+            alert(((turn === "X") ? "선공" : "후공") + '이 ' + selectedSymbol + '으로 승리!');
+            return;
+        }
+
+        if (checkBoardCompletion()) {
+            alert(((turn === "X") ? "선공" : "후공") + '이 모든 칸을 자신의 모양으로 채워 승리!');
+            return;
+        }
+
         turn = turn === 'X' ? 'O' : 'X';
         updateSymbols();
+    } else {
+        if (event.target.textContent !== '') {
+            console.log('Not empty');
+            return;
+        }
+
+        const selectedSymbol = getSelectedSymbol();
+        if (!selectedSymbol) {
+            alert('모양을 선택해주세요!');
+            return;
+        }
+
+        const trNumber = trs.indexOf(event.target.parentNode);
+        const tdNumber = tds[trNumber].indexOf(event.target);
+
+        tds[trNumber][tdNumber].textContent = selectedSymbol;
+        applyTransformations(trNumber, tdNumber, selectedSymbol);
+
+        if (checkVictory()) {
+            alert(((turn === "X") ? "선공" : "후공") + '이 ' + selectedSymbol + '으로 승리!');
+        } else {
+            turn = turn === 'X' ? 'O' : 'X';
+            updateSymbols();
+        }
     }
 };
 
