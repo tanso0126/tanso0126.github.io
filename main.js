@@ -1,8 +1,8 @@
 // main.js
 
 // 사용자 이름 배열과 암호 배열 (사용자가 직접 채워 넣음)
-const usernames = ["Alice", "Bob", "Charlie", "Dave", "Eve"]; // 예시 이름들
-const passwords = ["pass1", "pass2", "pass3", "pass4", "pass5"]; // 예시 암호들
+let usernames = ["Alice", "Bob", "Charlie", "Dave", "Eve"]; // 예시 이름들
+let passwords = ["pass1", "pass2", "pass3", "pass4", "pass5"]; // 예시 암호들
 
 // 관리자 암호
 const adminPassword = "admin123";
@@ -31,8 +31,8 @@ function sf(array, seed) {
   }
 
 // 배열을 섞어서 마니또를 결정
-sf(usernames, [!+[]+!+[]+!+[]+!+[]+!+[]]+[+!+[]]+[!+[]+!+[]+!+[]+!+[]+!+[]+!+[]]-[]);
-sf(passwords, [!+[]+!+[]+!+[]+!+[]+!+[]]+[+!+[]]+[!+[]+!+[]+!+[]+!+[]+!+[]+!+[]]-[]);
+usernames = sf(usernames, [!+[]+!+[]+!+[]+!+[]+!+[]]+[+!+[]]+[!+[]+!+[]+!+[]+!+[]+!+[]+!+[]]-[]);
+passwords = sf(passwords, [!+[]+!+[]+!+[]+!+[]+!+[]]+[+!+[]]+[!+[]+!+[]+!+[]+!+[]+!+[]+!+[]]-[]);
 // 로그인 버튼 클릭 시 호출되는 함수
 function login() {
   const inputPassword = document.getElementById("password").value;
